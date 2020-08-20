@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+
 #plotting the data.
 def plot_data(X,y):
     plt.scatter(X,y,color="red")
@@ -16,13 +17,15 @@ def compute_cost_function(X,y,theta):
     return J
 def gradient_descent(X,y,theta,alpha,iterations):
     m = len(y)
+    J_history = []
     for i in range(iterations):
         hypothesis = X.dot(theta)
         diff = np.subtract(hypothesis,y)
         X_transpose = np.transpose(X)
         derivitive_times_alpha = (alpha/m) * X_transpose.dot(diff) #Calculating the partial derivative * alpha
         theta = np.subtract(theta,derivitive_times_alpha) # Calculating theta simultaneously using matrix operations
-    return theta
+        J_history.append(compute_cost_function(X,y,theta))
+    return theta,J_history
 
 def run():
     #extracting data from our dataset
@@ -34,11 +37,20 @@ def run():
     b[:, 1] = X #Keeping the first column filled with 1's to correspond to theta_zero and changing the second column
     X = b #Reassigning
     theta = [0 ,0] #Initializing random theta value
-    J = compute_cost_function(X,y,theta)
     alpha = 0.01
-    iterations = 1500
-    theta = gradient_descent(X,y,theta,alpha,iterations)
+    iterations = 2000
+    [theta,J_history] = gradient_descent(X,y,theta,alpha,iterations)
+    #Plotting cost function
+    plt.plot(J_history)
+    plt.show()
+    X= dataset[:,0]
+    #Plotting the hypothesis
+    plt.scatter(X,y)
+    hypo = theta[0] + theta[1] * X
+    plt.plot(X,hypo,c='r')
+    plt.show()
     print("Theta value that minimize the cost function J is: {}".format(theta))
+
 
 if __name__ == '__main__':
     run()
